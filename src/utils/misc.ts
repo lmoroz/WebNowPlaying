@@ -1,5 +1,5 @@
 export function getMediaSessionCover() {
-  if (!navigator.mediaSession.metadata?.artwork) return "";
+  if (!navigator.mediaSession.metadata?.artwork || !navigator.mediaSession.metadata?.artwork.length) return "";
   const biggestImage = navigator.mediaSession.metadata.artwork.reduce((a, b) => {
     const aSize = parseInt(a.sizes?.split("x")[1] || "0");
     const bSize = parseInt(b.sizes?.split("x")[1] || "0");
