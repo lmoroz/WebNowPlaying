@@ -156,7 +156,7 @@ const YandexMusic: Site = {
       // Старый плеер: только mute/unmute через кнопку
       const currVolume = YandexMusic.info.volume();
       if ((currVolume === 0 && volume > 0) || (currVolume === 100 && volume < 100)) {
-        const button = document.querySelector<HTMLButtonElement>(".volume__btn");
+        const button = document.querySelector<HTMLButtonElement>(".volume__btn") ?? document.querySelector<HTMLButtonElement>('div[class*="ChangeVolume_root"] button');
         if (!button) throw new EventError();
         button.click();
       }
