@@ -95,7 +95,7 @@ const YandexMusic: Site = {
     setPosition: (seconds) => {
       // Новый плеер: input[type="range"] с aria-label
       const rangeInput = document.querySelector<HTMLInputElement>('input[aria-label="Управление таймкодом"]') 
-        ?? document.querySelector<HTMLInputElement>('input[aria-label="Timecode control"]');
+        ?? document.querySelector<HTMLInputElement>('input[aria-label="Manage time code"]');
       
       if (rangeInput) {
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
