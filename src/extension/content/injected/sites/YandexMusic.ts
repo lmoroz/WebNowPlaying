@@ -13,7 +13,7 @@ import {
 const YandexMusic: Site = {
   debug: {},
   init: null,
-  ready: () => !!navigator.mediaSession.metadata &&  (!!document.querySelector(".player-controls__btn_play") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Воспроизведение\"]") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Playback\"]") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Пауза\"]")) || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Pause\"]"),
+  ready: () => !!navigator.mediaSession.metadata && (!!document.querySelector(".player-controls__btn_play") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Воспроизведение\"]") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Playback\"]") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Пауза\"]") || !!document.querySelector("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label=\"Pause\"]")),
   info: createSiteInfo({
     name: () => "Yandex Music",
     title: () => navigator.mediaSession.metadata?.title ?? "",
@@ -93,6 +93,23 @@ const YandexMusic: Site = {
       button.click();
     },
     setPosition: (seconds) => {
+      // Новый плеер: input[type="range"] с aria-label
+      const rangeInput = document.querySelector<HTMLInputElement>('input[aria-label="Управление таймкодом"]') 
+        ?? document.querySelector<HTMLInputElement>('input[aria-label="Timecode control"]');
+      
+      if (rangeInput) {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+        if (nativeInputValueSetter) {
+          nativeInputValueSetter.call(rangeInput, seconds);
+        } else {
+          rangeInput.value = String(seconds);
+        }
+        rangeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        rangeInput.dispatchEvent(new Event('change', { bubbles: true }));
+        return;
+      }
+
+      // Старый плеер: .progress__progress с mouse events
       const percent = positionSecondsToPercent(YandexMusic, seconds);
       const el = document.querySelector(".progress__progress");
       if (!el) throw new EventError();
@@ -131,12 +148,14 @@ const YandexMusic: Site = {
         toggleLike: () => {
           let button = document.querySelector<HTMLButtonElement>(".player-controls__btn .d-icon_heart") ?? document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Нравится\"]");
           if (!button) button = document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Like\"]")
+          if (!button) button = document.querySelector<HTMLButtonElement>(".player-controls__btn .d-icon_heart-full") ?? document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Нравится\"]");
+          if (!button) button = document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Like\"]")
           if (!button) throw new EventError();
           button.click();
         },
         toggleDislike: () => {
-          let button = document.querySelector<HTMLButtonElement>(".player-controls__btn .d-icon_heart-full") ?? document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Нравится\"]");
-          if (!button) button = document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Like\"]")
+          let button = document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"Не нравится\"]");
+          if (!button) button = document.querySelector<HTMLButtonElement>("div[class*='PlayerBarDesktopWithBackgroundProgressBar_sonata'] button[aria-label=\"I don't like it\"]")
           if (!button) throw new EventError();
           button.click();
         },
