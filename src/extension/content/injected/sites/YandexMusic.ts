@@ -136,9 +136,27 @@ const YandexMusic: Site = {
       );
     },
     setVolume: (volume) => {
+      // Новый плеер: input[type="range"] с max="1"
+      const rangeInput = document.querySelector<HTMLInputElement>('input[aria-label="Управление громкостью"]')
+        ?? document.querySelector<HTMLInputElement>('input[aria-label="Manage volume"]');
+      
+      if (rangeInput) {
+        const normalizedVolume = volume / 100; // 0-100 -> 0-1
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+        if (nativeInputValueSetter) {
+          nativeInputValueSetter.call(rangeInput, normalizedVolume);
+        } else {
+          rangeInput.value = String(normalizedVolume);
+        }
+        rangeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        rangeInput.dispatchEvent(new Event('change', { bubbles: true }));
+        return;
+      }
+
+      // Старый плеер: только mute/unmute через кнопку
       const currVolume = YandexMusic.info.volume();
       if ((currVolume === 0 && volume > 0) || (currVolume === 100 && volume < 100)) {
-        const button = document.querySelector<HTMLButtonElement>(".volume__btn") ?? document.querySelector<HTMLButtonElement>('div[class*="ChangeVolume_root"] button');
+        const button = document.querySelector<HTMLButtonElement>(".volume__btn");
         if (!button) throw new EventError();
         button.click();
       }
