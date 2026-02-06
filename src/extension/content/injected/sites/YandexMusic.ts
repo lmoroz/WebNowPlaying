@@ -202,13 +202,28 @@ const YandexMusic: Site = {
       button.click();
     },
   },
-  controls: () =>
-    createDefaultControls(YandexMusic, {
+  controls: () => {
+    // Check if volume/position sliders are available
+    const hasVolumeSlider = !!(
+      document.querySelector('input[aria-label="Управление громкостью"]') ??
+      document.querySelector('input[aria-label="Manage volume"]') ??
+      document.querySelector('.volume__btn')
+    );
+    const hasPositionSlider = !!(
+      document.querySelector('input[aria-label="Управление таймкодом"]') ??
+      document.querySelector('input[aria-label="Manage time code"]') ??
+      document.querySelector('.progress__progress')
+    );
+    
+    return createDefaultControls(YandexMusic, {
       ratingSystem: RatingSystem.LIKE_DISLIKE,
       availableRepeat: Repeat.NONE | Repeat.ALL | Repeat.ONE,
       canSkipPrevious: notDisabled(document.querySelector<HTMLButtonElement>(".d-icon_track-prev") ?? document.querySelector<HTMLButtonElement>("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label*=\"Предыдущ\"]") ?? document.querySelector<HTMLButtonElement>("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label*=\"Prev\"]")),
       canSkipNext: notDisabled(document.querySelector<HTMLButtonElement>(".d-icon_track-next") ?? document.querySelector<HTMLButtonElement>("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label*=\"Следующ\"]") ?? document.querySelector<HTMLButtonElement>("div[class*=\"SonataControlsDesktop_sonataButtons\"] button[aria-label*=\"Next\"]")),
-    }),
+      canSetVolume: hasVolumeSlider,
+      canSetPosition: hasPositionSlider && YandexMusic.info.duration() > 0,
+    });
+  },
 };
 
 export default YandexMusic;
