@@ -22,6 +22,7 @@ export type TSupportedSites =
   | "Tidal"
   | "Twitch"
   | "VK"
+  | "Zvuk"
   | "Yandex Music"
   | "YouTube"
   | "YouTube Embeds"
@@ -44,6 +45,7 @@ export const SupportedSites: TSupportedSites[] = [
   "Tidal",
   "Twitch",
   "VK",
+  "Zvuk",
   "Yandex Music",
   "YouTube",
   "YouTube Embeds",

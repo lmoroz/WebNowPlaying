@@ -93,6 +93,11 @@ const siteIndex: SiteIndex[] = [
     exec,
   },
   {
+    match: () => window.location.hostname === "zvuk.com" || window.location.hostname === "sber-zvuk.com",
+    name: "Zvuk",
+    exec,
+  },
+  {
     match: () => window.location.hostname === "music.yandex.ru" || window.location.hostname === "music.yandex.com",
     name: "Yandex Music",
     exec,

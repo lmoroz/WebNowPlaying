@@ -17,6 +17,7 @@ import Spotify from "./sites/Spotify";
 import Tidal from "./sites/Tidal";
 import Twitch from "./sites/Twitch";
 import VK from "./sites/VK";
+import Zvuk from "./sites/Zvuk";
 import YandexMusic from "./sites/YandexMusic";
 import YouTube from "./sites/YouTube";
 import YouTubeEmbeds from "./sites/YouTubeEmbeds";
@@ -45,6 +46,7 @@ const sites = [
   Tidal,
   Twitch,
   VK,
+  Zvuk,
   YandexMusic,
   YouTube,
   YouTubeEmbeds,
