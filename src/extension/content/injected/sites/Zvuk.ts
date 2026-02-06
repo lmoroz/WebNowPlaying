@@ -405,14 +405,20 @@ const Zvuk: Site = {
       button.click();
     },
   },
-  controls: () =>
-    createDefaultControls(Zvuk, {
+  controls: () => {
+    const shuffleBtn = document.querySelector<HTMLButtonElement>(Selectors.shuffleButton);
+    const repeatBtn = document.querySelector<HTMLButtonElement>(Selectors.repeatButton);
+    
+    return createDefaultControls(Zvuk, {
       ratingSystem: RatingSystem.LIKE,
       availableRepeat: Repeat.NONE | Repeat.ALL | Repeat.ONE,
       canSkipPrevious: notDisabled(getPrevButton()),
       canSkipNext: notDisabled(getNextButton()),
       canSetPosition: Zvuk.info.duration() > 0, // Only in maxi mode when time is visible
-    }),
+      canSetShuffle: notDisabled(shuffleBtn),
+      canSetRepeat: notDisabled(repeatBtn),
+    });
+  },
 };
 
 export default Zvuk;
